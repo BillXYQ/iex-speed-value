@@ -1,0 +1,14 @@
+#!/bin/sh
+# Reject staged files larger than 50MB. Enable once per clone:
+#   git config core.hooksPath .githooks
+limit=$((50 * 1024 * 1024))
+status=0
+git diff --cached --name-only --diff-filter=AM -z | while IFS= read -r -d '' f; do
+  [ -f "$f" ] || continue
+  size=$(wc -c < "$f" | tr -d ' ')
+  if [ "$size" -gt "$limit" ]; then
+    echo "pre-commit: '$f' is $((size / 1024 / 1024))MB (> 50MB). Keep it on OneDrive, not in git." >&2
+    exit 1
+  fi
+done || status=1
+exit $status

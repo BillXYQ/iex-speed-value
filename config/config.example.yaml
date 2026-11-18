@@ -1,0 +1,9 @@
+# Copy to config/config.local.yaml (gitignored) and edit for your machine.
+# Alternatively set the IEX_SPEED_RAW_DATA environment variable to override raw_data_dir.
+
+# Root of the raw data on OneDrive (read-only; never write here).
+raw_data_dir: "/Users/bill/Library/CloudStorage/OneDrive-UniversityofIllinois-Urbana/Course Files/FIN556"
+
+# Repo-relative output locations.
+sample_data_dir: "data/sample"
+results_dir: "results"
