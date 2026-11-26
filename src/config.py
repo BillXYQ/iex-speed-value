@@ -45,5 +45,9 @@ def sample_data_dir() -> Path:
     return _path("sample_data_dir")
 
 
+def parsed_data_dir() -> Path:
+    return _path("parsed_data_dir")
+
+
 def results_dir() -> Path:
     return _path("results_dir")
