@@ -6,4 +6,6 @@ raw_data_dir: "/Users/bill/Library/CloudStorage/OneDrive-UniversityofIllinois-Ur
 
 # Repo-relative output locations.
 sample_data_dir: "data/sample"
+# Parsed Parquet output (see docs/data_format.md). Gitignored; never write into raw_data_dir.
+parsed_data_dir: "data/parsed"
 results_dir: "results"
