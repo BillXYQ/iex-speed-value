@@ -59,6 +59,18 @@ git config core.hooksPath .githooks
 
 All code reads paths through `src/config.py`; do not hard-code data paths elsewhere.
 
+## Getting IEX Data
+
+`scripts/iex_hist.py` lists and downloads IEX HIST files, including DEEP+ (the course downloader only supports TOPS and DEEP). Standard library only; run it on a machine with internet access.
+
+```bash
+python3 scripts/iex_hist.py summary                     # feeds, date ranges, file sizes
+python3 scripts/iex_hist.py dates --feed DPLS --start 2020-07-01 --end 2021-01-31
+python3 scripts/iex_hist.py download --feed DPLS --date 2025-11-03   # -> data/raw/iex/DPLS/
+```
+
+Use the feed names printed by `summary`. Downloads go to `data/raw/` (gitignored), never into the raw OneDrive folder.
+
 ## How to Run
 
 _Placeholder — to be filled in as the pipeline is built._
@@ -76,6 +88,7 @@ src/config.py   single source of truth for data paths
 src/parsers/    IEX DEEP+ and NASDAQ ITCH parsers, alignment, Strategy Studio conversion
 src/research/   events, lag, order fates, classification, evaluation
 strategy/       Strategy Studio strategy (C++) and latency sweep scripts
+scripts/        data acquisition tools (IEX HIST listing/download)
 notebooks/      exploratory analysis
 data/sample/    small data samples (raw data stays on OneDrive)
 results/        figures and tables
