@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/usr/bin/env bash
 # Reject staged files larger than 50MB. Enable once per clone:
 #   git config core.hooksPath .githooks
 limit=$((50 * 1024 * 1024))
