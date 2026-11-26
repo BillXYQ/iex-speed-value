@@ -1,6 +1,10 @@
 # CLAUDE.md
 
-FIN 556 (UIUC Algorithmic Market Microstructure) group project: the value of speed on IEX, via NASDAQ → IEX cross-venue quote propagation and an SPY-led ETF trading strategy.
+FIN 556 (UIUC Algorithmic Market Microstructure) group project: the value of speed on IEX, via NASDAQ → IEX cross-venue quote propagation in SPY, plus a stale-quote taking strategy whose simulated latency is swept to find where it stops paying.
+
+- Full plan, roles and ordered timeline: `docs/PROJECT_PLAN.md`.
+- Scope: SPY only, ~5 trading days. Out of scope: FPGA/hardware, market making, other symbols, SPY → leveraged ETF lead-lag. D-Limit before/after is a stretch goal.
+- Code layout: parsers in `src/parsers/` (Aditi), research and evaluation in `src/research/` (Yiqi), Strategy Studio code in `strategy/` (Qunbo).
 
 ## Authorship
 - In docs and attributions, write my name as **Yiqi (Yiqi Xu)**.
