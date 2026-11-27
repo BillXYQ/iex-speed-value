@@ -4,11 +4,11 @@ What we found on the course VM on 2026-11-27, by read-only inspection (Yiqi). No
 Re-check before relying on anything here: the VM is shared and may change.
 
 ## Access
-- Browser remote desktop through `vpn2.fintech.illinois.edu` (session `rdp_fin556vm`), Xfce desktop, login = NetID.
+- Browser-based remote desktop provided by the course (see the course instructions for the link), Xfce desktop.
 - Copy/paste between your own computer and the VM does not work in the web client. Workaround: open a browser **inside** the VM and copy/paste within the VM (terminal paste is `Ctrl+Shift+V`, copy is `Ctrl+Shift+C`).
 
 ## Machine
-- Ubuntu 22.04.3 LTS, 192 cores, 125 GB RAM. **Shared by the whole class** (50+ accounts): be considerate with CPU and memory.
+- Ubuntu 22.04, many cores and plenty of RAM. **Shared by the whole class**: be considerate with CPU and memory.
 - Tools present: `python3` (3.10), `git`, `g++`, `code` (VS Code), `zstd`, `tcpdump`, `sqlite3`. Not present: `tshark`.
 
 ## Disk (the main constraint)
@@ -16,9 +16,9 @@ Re-check before relying on anything here: the VM is shared and may change.
 |---|---|---|---|
 | `/` (includes `/home`) | 62 GB | ~5 GB | Shared by everyone. **Never write large files to your home directory.** |
 | `/db_pcaps` | 28 TB | 3.3 TB | Raw market data (read only for us) |
-| `/vagrant` | 913 GB | 123 GB | Course setup files, Strategy Studio installers, course IEX parser |
+| `/vagrant` | 913 GB | 123 GB | Strategy Studio installers, course IEX parser |
 
-- Last year's scripts reference a per-student workspace `/mnt/students_7tb_ssd/<netid>`, but it is **not mounted** on this VM. Asked the professor where to write large intermediate files.
+- We found no large per-student workspace on this VM. Asked the professor where to write large intermediate files.
 - Process raw data as a stream (e.g. `zstd -dc file.pcap.zst | parser --symbol SPY`) so only the small SPY output is written.
 
 ## Market data on the VM
