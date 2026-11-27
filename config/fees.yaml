@@ -1,0 +1,30 @@
+# Exchange fees for SPY (Tape B, executions at or above $1.00), in $ per share.
+# Period: our NASDAQ data window, 2025-02-03 to 2025-04-30. Sources and caveats: docs/fees.md.
+# Positive = fee paid, negative = rebate received.
+
+period: {start: "2025-02-01", end: "2025-04-30"}
+
+venues:
+  iex:
+    # Our strategy only takes liquidity and adds no displayed liquidity, so it falls in Tier 1.
+    remove_displayed: 0.0030          # Tier 1: member adds < 25,000 ADV displayed (SR-IEX-2025-03, unchanged)
+    remove_displayed_tier2: 0.0022    # Tier 2: member adds >= 25,000 ADV displayed (0.0020 -> 0.0022 from 2025-02-01)
+    remove_non_displayed: 0.0010
+    add_displayed: 0.0                # not used by a taking strategy
+  nasdaq:
+    remove_displayed: 0.0030          # default "All MPIDs" remove fee (Nasdaq price list)
+    add_displayed: -0.0018            # default credit, "all other firms" (not used by a taking strategy)
+
+# Regulatory fee on sells only, as a fraction of notional.
+sec_section31:
+  - {from: "2024-05-22", to: "2025-05-13", rate: 27.80e-6}   # $27.80 per million
+  - {from: "2025-05-14", to: null,         rate: 0.0}
+
+# Fee scenarios for sensitivity analysis: per-venue remove fee in $/share.
+scenarios:
+  base:      {iex: 0.0030, nasdaq: 0.0030}
+  iex_tier2: {iex: 0.0022, nasdaq: 0.0030}
+  zero:      {iex: 0.0,    nasdaq: 0.0}
+
+# Strategy Studio's shared default (strategy.db AccountFees), for reference only:
+# $0.0012 per share + 2.24e-05 of notional on sells, the same for every venue.
