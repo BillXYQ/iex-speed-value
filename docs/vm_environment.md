@@ -28,7 +28,7 @@ Re-check before relying on anything here: the VM is shared and may change.
 | `/db_pcaps/glbx_pcaps/YYYYMMDD/` | CME Globex (`dc3-glbx`), all products | 2025-02-01 onward, 89 days | ~388 GB (zstd) | 10-minute files, `dc3-glbx-a-YYYYMMDDTHHMMSS.pcap.zst` |
 | `/vagrant/iexdownloaderparser/data/iex_downloads/DEEP/` | IEX | none | — | Only a README; **no IEX data on the VM** |
 
-- `xnas_pcaps` also contains placeholder folders with impossible dates (e.g. `20250230`) holding only an empty `pcap_list.txt`; ignore them.
+- `xnas_pcaps` also contains 72 empty placeholder folders with impossible dates (`20250229` to `20250300`); ignore them. A `pcap_list.txt` sits at the top level of `xnas_pcaps`. Per-day completeness: `results/xnas_inventory/summary.md`.
 - Weekend folders exist (e.g. 2025-02-01 is a Saturday); use weekdays.
 - Missing piece for our study: IEX DEEP/DEEP+ for the same Feb–Apr 2025 dates (IEX HIST downloads are paused). Asked the professor.
 
