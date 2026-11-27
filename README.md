@@ -19,7 +19,7 @@ Research questions:
 
 **Scope:** SPY only; ~5 trading days (3 in-sample, 2 out-of-sample). Out of scope: FPGA/hardware, market making, other symbols, SPY → leveraged ETF lead-lag.
 
-Full plan, roles and ordered timeline: [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md).
+Full plan, roles and ordered timeline: [`docs/PROJECT_PLAN.md`](docs/PROJECT_PLAN.md). Course VM (data locations, Strategy Studio settings): [`docs/vm_environment.md`](docs/vm_environment.md).
 
 ## Team
 
