@@ -78,6 +78,9 @@ _Placeholder — to be filled in as the pipeline is built._
 1. Parse IEX DEEP+ pcap files → `src/parsers/` (TBD)
 2. Parse NASDAQ ITCH and align with IEX → `src/parsers/` (TBD)
 3. Event study (quote propagation lags, order fates) → `src/research/` (TBD)
+   - Stage 1 IEX-only prototype (course DEEP tick file → `bbo` → stats/figures):
+     `python3 scripts/iex_bbo_prototype.py --tick-file <relative to raw_data_dir> [--book-file <course book_updates CSV>]`
+   - Tests: `python3 -m pytest tests`
 4. Strategy Studio backtest + latency sweep → `strategy/` (TBD)
 5. Evaluation (PnL vs. latency, out-of-sample) → `src/research/` (TBD)
 

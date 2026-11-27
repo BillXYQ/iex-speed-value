@@ -32,7 +32,7 @@ Strategy Studio tick files are a separate output with their own fixed format (`T
 | Symbol | Uppercase ticker, e.g. `SPY`. |
 
 Two timestamps on every row:
-- `ts_exch_ns`: the exchange's own timestamp inside the message. **Used for all cross-venue comparisons.**
+- `ts_exch_ns`: the exchange's own timestamp inside the message (the event time), not the packet send time. **Used for all cross-venue comparisons.** Note: the course DEEP parser's tick files only keep the IEX-TP packet send time; the Stage 1 prototype uses that as a stand-in.
 - `ts_recv_ns`: capture/receive time (pcap or vendor timestamp). Kept for latency accounting; may be null if unavailable.
 
 ## 3. Table `orders` (order-by-order events)
@@ -106,3 +106,4 @@ Warnings (reported, file accepted):
 
 ## Changelog
 - v0.1: first draft (Yiqi).
+- v0.2: clarify that `ts_exch_ns` is the message event time, not the packet send time (Yiqi).
