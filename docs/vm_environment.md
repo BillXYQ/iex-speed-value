@@ -56,6 +56,8 @@ Shared install (owned by `vagrant`, **do not edit**): `/shared/ss/bt` (backteste
 
 Default latency is zero, which is the natural starting point of our latency sweep. Last year's group_06 set latency from the command line: `StrategyCommandLine cmd set_simulator_params -latency_to_exchange <value>`.
 
+**Units are very likely milliseconds.** In last year's exports, group_04 (default settings) shows 0 ms from order entry to fill, and group_06 (`LATENCY=10`) shows exactly 10.000 ms (minimum and median over 9,056 filled orders). With an integer column in milliseconds, the simulator **cannot express 350µs**, so our sub-millisecond sweep has to delay reactions inside the strategy (as in group_01's `VenueArbPlusLatencyStrategy` with `latency_ns`), with the simulator latency left at 0. To confirm on this VM: run once with `-latency_to_exchange 1` and check that entry → fill is 1 ms.
+
 **Fees** (`strategy.db`, table `AccountFees`): `costPerContract = 0.0012` ($ per share), `salesFeesPercentageOfNotional = 2.24e-05` (sell-side regulatory fee), others 0. This is one venue-independent fee; venue-specific IEX vs. NASDAQ take fees will be handled in our evaluation code.
 
 **Own copy:** last year each student ran Strategy Studio from `$HOME/ss/bt` (a copy of the shared install) and edited `backtester_config.txt` / `preferred_feeds.csv` there. Nobody on our team has set this up yet on this VM; note the 5 GB free on `/`.

@@ -82,7 +82,8 @@ _Placeholder — to be filled in as the pipeline is built._
      `python3 scripts/iex_bbo_prototype.py --tick-file <relative to raw_data_dir> [--book-file <course book_updates CSV>]`
    - Tests: `python3 -m pytest tests`
 4. Strategy Studio backtest + latency sweep → `strategy/` (TBD)
-5. Evaluation (PnL vs. latency, out-of-sample) → `src/research/` (TBD)
+5. Evaluation (PnL vs. latency, out-of-sample) → `src/research/ss_results.py`, `src/research/fees.py`
+   - `python3 scripts/evaluate_backtest.py --results-dir <exported CSVs> [--latency-map sweep.csv] [--scenario base|iex_tier2|zero]`
 
 ## Repository Layout
 
