@@ -124,28 +124,34 @@ Only if both venues' data for Jul 2020 – Jan 2021 is easily available: repeat 
 
 ---
 
-## 5. Repository (GitHub)
+## 5. Repositories (GitHub)
 
-Repo: `BillXYQ/iex-speed-value` (private for now; to be migrated to the course organization with full commit history, so every commit stays attributed to its author).
+Each teammate keeps their own repo; the interface between them is the shared data format.
+
+| Repo | Owner | Contents |
+|---|---|---|
+| `BillXYQ/iex-speed-value` (public) | Yiqi | Research and evaluation, plan, shared docs |
+| `Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX` | Aditi | IEX DEEP+ and NASDAQ ITCH parsers, Parquet conversion, data format (source of truth) |
+| Qunbo's repo | Qunbo | Strategy Studio strategy (C++) and latency sweep scripts |
+
+This repo:
 
 ```
 iex-speed-value/
 ├── README.md        # overview, setup, final report
 ├── CLAUDE.md        # project rules (git workflow, data paths, IEX latency table)
-├── config/          # path config (config.local.yaml is gitignored)
+├── config/          # path config (config.local.yaml is gitignored), fees
 ├── src/
 │   ├── config.py    # single source of truth for data paths
-│   ├── parsers/     # IEX DEEP+ and NASDAQ ITCH parsers, alignment, SS conversion (Aditi)
-│   └── research/    # events, lag, order fates, classification, evaluation (Yiqi)
-├── strategy/        # Strategy Studio strategy + latency sweep scripts (Qunbo)
-├── notebooks/       # exploratory analysis
-├── data/sample/     # small samples only (< 50MB); raw data stays on OneDrive
+│   └── research/    # loading/validation, events, lag, order fates, classification, evaluation
+├── scripts/         # prototypes, inventories, evaluation CLI
+├── data/sample/     # small samples only (< 50MB); raw data stays on OneDrive / the VM
 ├── results/         # figures and tables
-└── docs/            # this plan, iteration log
+└── docs/            # this plan, data format (mirror), iteration log
 ```
 
+- Parsed data moves between repos as Parquet files (OneDrive), never as raw pcaps in git.
 - Every feature on its own branch, merged through a pull request; never push directly to `main`.
-- Tasks tracked as GitHub issues.
 - Credit reused code (course parser, group_01, group_06) in commits and the README.
 
 ---
