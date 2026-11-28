@@ -75,7 +75,7 @@ Use the feed names printed by `summary`. Downloads go to `data/raw/` (gitignored
 
 _Placeholder — to be filled in as the pipeline is built._
 
-1. Parse IEX DEEP+ pcap files → Aditi's parser repo (output format: `docs/data_format.md`)
+1. Parse IEX DEEP+ pcap files → [Aditi's parser repo](https://github.com/AditiB12/Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX) (output format: `docs/data_format.md`)
 2. Parse NASDAQ ITCH and align with IEX → Aditi's parser repo (TBD)
 3. Event study (quote propagation lags, order fates) → `src/research/` (TBD)
    - Stage 1 IEX-only prototype (course DEEP tick file → `bbo` → stats/figures):
@@ -98,7 +98,7 @@ docs/           project plan, iteration log
 config/         path configuration (config.local.yaml is gitignored)
 ```
 
-Each teammate keeps their own repo: parsers are in Aditi's repo (`Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX`), Strategy Studio code in Qunbo's. This repo reads the parsers' Parquet output in the format of `docs/data_format.md`.
+Each teammate keeps their own repo: parsers are in [Aditi's repo](https://github.com/AditiB12/Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX), Strategy Studio code in Qunbo's (link TBD). This repo reads the parsers' Parquet output in the format of `docs/data_format.md`.
 
 Workflow: one branch per feature, merged through a pull request; never push directly to `main`.
 

@@ -1,7 +1,7 @@
 # Shared Data Format (v0.3)
 
 The contract between the parsers (Aditi Bhatt, in her own repo) and the research/evaluation code in this repo (Yiqi (Yiqi Xu)).
-**The source of truth is `docs/data_format.md` in Aditi's parser repo.** This file mirrors it and adds notes for the research side. If the two ever disagree, hers wins and this file gets updated.
+**The source of truth is [`docs/data_format.md` in Aditi's parser repo](https://github.com/AditiB12/Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX/blob/main/docs/data_format.md).** This file mirrors it and adds notes for the research side. If the two ever disagree, hers wins and this file gets updated.
 
 Strategy Studio tick files are a separate output with their own fixed format (`TextTickReader` / `DepthUpdateByPrice`) and are not covered here.
 

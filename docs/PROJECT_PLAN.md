@@ -131,8 +131,8 @@ Each teammate keeps their own repo; the interface between them is the shared dat
 | Repo | Owner | Contents |
 |---|---|---|
 | `BillXYQ/iex-speed-value` (public) | Yiqi | Research and evaluation, plan, shared docs |
-| `Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX` | Aditi | IEX DEEP+ and NASDAQ ITCH parsers, Parquet conversion, data format (source of truth) |
-| Qunbo's repo | Qunbo | Strategy Studio strategy (C++) and latency sweep scripts |
+| [`AditiB12/Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX`](https://github.com/AditiB12/Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX) | Aditi | IEX DEEP+ and NASDAQ ITCH parsers, Parquet conversion, data format (source of truth) |
+| Qunbo's repo (link TBD) | Qunbo | Strategy Studio strategy (C++) and latency sweep scripts |
 
 This repo:
 

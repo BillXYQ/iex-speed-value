@@ -4,7 +4,7 @@ FIN 556 (UIUC Algorithmic Market Microstructure) group project: the value of spe
 
 - Full plan, roles and ordered timeline: `docs/PROJECT_PLAN.md`.
 - Scope: SPY only, ~5 trading days. Out of scope: FPGA/hardware, market making, other symbols, SPY → leveraged ETF lead-lag. D-Limit before/after is a stretch goal.
-- Each teammate keeps their own repo. This repo holds research and evaluation (`src/research/`, Yiqi). Parsers live in Aditi's repo (`Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX`), Strategy Studio code in Qunbo's repo.
+- Each teammate keeps their own repo. This repo holds research and evaluation (`src/research/`, Yiqi). Parsers live in Aditi's repo (https://github.com/AditiB12/Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX), Strategy Studio code in Qunbo's repo (link TBD).
 - The interface with Aditi is her `docs/data_format.md` (mirrored in `docs/data_format.md` here; hers wins). Read her Parquet only through `src/research/schema.load_table`.
 
 ## Authorship
