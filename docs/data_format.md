@@ -16,7 +16,7 @@ Strategy Studio tick files are a separate output with their own fixed format (`T
 - `parsed_data_dir`: set in `config/config.local.yaml` (default `data/parsed`, gitignored). Never write parsed output into the raw OneDrive folder.
 - Directory `venue` is lowercase (`iex`, `nasdaq`); the `venue` column inside the files is uppercase (`IEX`, `NASDAQ`).
 - `table`: `orders`, `bbo`, `admin`. The parser writes CSV first; `scripts/to_parquet.py` in Aditi's repo converts it to typed Parquet (zstd).
-- Read files with `src.research.schema.load_table(path, "orders" | "bbo")`. It keeps integer columns with nulls as nullable integers (the default pandas reader turns them into float64, which corrupts ns timestamps and order IDs) and casts uint64 sequence/size columns to int64. `order_id` stays uint64.
+- Read files with `src.research.schema.load_table(path, "orders" | "bbo")`. It keeps integer columns with nulls as nullable integers (the default pandas reader turns them into float64, which corrupts ns timestamps and order IDs) and casts the uint64 columns (`seq`, sizes, `flags`, `channel`, `session`) to int64. `order_id` stays uint64.
 
 ## 2. Conventions
 
@@ -49,7 +49,7 @@ Exchange and capture timestamps mean different things; cross-venue comparison ne
 | `flags` | Raw second byte; interpret by message type |
 | `seq` | Transport message sequence |
 | `message_type` | Original wire message type |
-| `executed_size`, `execution_price` | Trade quantity and actual execution price (execute only) |
+| `executed_size`, `execution_price` | Trade quantity and actual execution price. On non-execute rows `executed_size` is **0** (not null) and `execution_price` is null, so filter executions by `event == "execute"`, not by nulls |
 | `channel`, `session` | Transport stream identity |
 
 Rules that matter for the research:
@@ -80,7 +80,7 @@ Errors (file rejected):
 - `bbo`: `seq` not strictly increasing; empty side (null price) with non-zero size.
 - `orders`: `seq` decreasing; `execute` without `executed_size`/`execution_price`.
 
-Warnings (file accepted): `ts_exch_ns` decreasing; crossed book (`bid_px` > `ask_px`).
+Warnings (file accepted): `ts_exch_ns` decreasing; crossed book (`bid_px` > `ask_px`); `ts_capture_ns` earlier than `ts_exch_ns`, or (orders) `ts_send_ns` earlier than `ts_exch_ns`, which is physically impossible if the clocks are comparable.
 
 ## 7. Notes on the DEEP stand-in
 
@@ -90,3 +90,4 @@ Until DEEP+ data is available, `src/research/course_parser_io.py` builds a `bbo`
 - v0.1: first draft (Yiqi).
 - v0.2: clarify that `ts_exch_ns` is the message event time, not the packet send time (Yiqi).
 - v0.3: adopt Aditi's format as the source of truth: `ts_recv_ns` → `ts_capture_ns`, `px` → `price`, lowercase events with `clear`, uppercase venue, execution fields, empty side = null price + size 0 (Yiqi).
+- v0.3.1: `executed_size` is 0 on non-execute rows; list all uint64 columns; warn on capture/send times before the exchange time (Yiqi).

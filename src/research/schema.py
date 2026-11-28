@@ -124,6 +124,11 @@ def _check_order(df: pd.DataFrame, r: ValidationReport, strict_seq: bool) -> Non
     n = int((df["ts_exch_ns"].astype("float64").diff().iloc[1:] < 0).sum())
     if n:
         r.warnings.append(f"ts_exch_ns decreases {n} time(s)")
+    for col in ("ts_capture_ns", "ts_send_ns"):
+        if col in df.columns:
+            early = int((df[col].astype("Int64") < df["ts_exch_ns"].astype("Int64")).fillna(False).sum())
+            if early:
+                r.warnings.append(f"{col} earlier than ts_exch_ns on {early} row(s)")
 
 
 def validate_bbo(df: pd.DataFrame) -> ValidationReport:

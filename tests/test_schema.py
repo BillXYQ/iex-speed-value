@@ -41,7 +41,7 @@ def orders_rows():
         "flags": [0, 1, 0, 0],
         "seq": [1, 2, 3, 4],
         "message_type": ["a", "M", "L", "C"],
-        "executed_size": [None, None, 100, None],
+        "executed_size": [0, 0, 100, 0],  # 0, not null, off executions
         "execution_price": [None, None, 4_100_100, None],
         "ts_send_ns": [T + 1, T + 11, T + 21, T + 31],
         "channel": [1] * n, "session": [7] * n,
@@ -53,7 +53,12 @@ def test_load_and_validate_orders(tmp_path):
     assert str(df["seq"].dtype) == "int64" and str(df["order_id"].dtype) == "UInt64"
     assert int(df["order_id"].iloc[0]) == 2**63 + 7      # no float round-trip
     assert int(df["ts_capture_ns"].iloc[0]) == T + 5
-    assert validate_orders(df).ok, validate_orders(df)
+    rep = validate_orders(df)
+    assert rep.ok and not rep.warnings, rep
+
+    early = df.copy()
+    early["ts_capture_ns"] = early["ts_exch_ns"] - 100   # as in her synthetic demo
+    assert any("ts_capture_ns earlier" in w for w in validate_orders(early).warnings)
 
     bad = df.copy()
     bad.loc[1, "event"] = "MODIFY"        # events are lowercase
