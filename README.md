@@ -75,13 +75,13 @@ Use the feed names printed by `summary`. Downloads go to `data/raw/` (gitignored
 
 _Placeholder — to be filled in as the pipeline is built._
 
-1. Parse IEX DEEP+ pcap files → `src/parsers/` (TBD)
-2. Parse NASDAQ ITCH and align with IEX → `src/parsers/` (TBD)
+1. Parse IEX DEEP+ pcap files → Aditi's parser repo (output format: `docs/data_format.md`)
+2. Parse NASDAQ ITCH and align with IEX → Aditi's parser repo (TBD)
 3. Event study (quote propagation lags, order fates) → `src/research/` (TBD)
    - Stage 1 IEX-only prototype (course DEEP tick file → `bbo` → stats/figures):
      `python3 scripts/iex_bbo_prototype.py --tick-file <relative to raw_data_dir> [--book-file <course book_updates CSV>]`
    - Tests: `python3 -m pytest tests`
-4. Strategy Studio backtest + latency sweep → `strategy/` (TBD)
+4. Strategy Studio backtest + latency sweep → Qunbo's repo (TBD)
 5. Evaluation (PnL vs. latency, out-of-sample) → `src/research/ss_results.py`, `src/research/fees.py`
    - `python3 scripts/evaluate_backtest.py --results-dir <exported CSVs> [--latency-map sweep.csv] [--scenario base|iex_tier2|zero]`
 
@@ -89,9 +89,7 @@ _Placeholder — to be filled in as the pipeline is built._
 
 ```
 src/config.py   single source of truth for data paths
-src/parsers/    IEX DEEP+ and NASDAQ ITCH parsers, alignment, Strategy Studio conversion
-src/research/   events, lag, order fates, classification, evaluation
-strategy/       Strategy Studio strategy (C++) and latency sweep scripts
+src/research/   loading/validation of parsed data, events, lag, order fates, classification, evaluation
 scripts/        data acquisition tools (IEX HIST listing/download)
 notebooks/      exploratory analysis
 data/sample/    small data samples (raw data stays on OneDrive)
@@ -99,6 +97,8 @@ results/        figures and tables
 docs/           project plan, iteration log
 config/         path configuration (config.local.yaml is gitignored)
 ```
+
+Each teammate keeps their own repo: parsers are in Aditi's repo (`Cross-Venue-Quote-Propagation-and-the-Value-of-Speed-on-IEX`), Strategy Studio code in Qunbo's. This repo reads the parsers' Parquet output in the format of `docs/data_format.md`.
 
 Workflow: one branch per feature, merged through a pull request; never push directly to `main`.
 

@@ -9,18 +9,19 @@ per symbol and day, e.g. `tick_SPY_20220801.txt.gz`, with two row types:
     collection_time, source_time, seq, T, IEX, price, size
 
 Timestamps are UTC strings with nanoseconds. Notes from reading the parser:
-  * collection_time = pcap capture time  -> our `ts_recv_ns`.
+  * collection_time = pcap capture time  -> `ts_capture_ns`.
   * source_time     = IEX-TP packet *send time*, not the message's own event
-    timestamp (the parser does not write that one to the tick file). We use it as
-    `ts_exch_ns` here and flag the difference in docs/data_format.md.
+    timestamp (the parser does not write that one to the tick file). In Aditi's
+    format that is `ts_send_ns`; the bbo table has no such column, so we use it as
+    a stand-in for `ts_exch_ns` and flag the difference in docs/data_format.md.
   * is_partial = 1 means more updates for the same IEX event follow; 0 means the
     event is complete. A BBO is only emitted after complete events.
   * size = 0 removes a price level. (The course StockBook inserts a zero-size level
     when a removal arrives for an unknown price; we ignore such removals instead.)
 
 This is an adapter for the DEEP sample we already have; the research code itself
-only depends on the `bbo` format, so swapping in Aditi's DEEP+ parser output later
-changes nothing downstream.
+only depends on the `bbo` format, so Aditi's DEEP+ parser output (read with
+`schema.load_table`) can replace it without downstream changes.
 """
 
 from __future__ import annotations
@@ -43,18 +44,18 @@ def _to_ns(s: pd.Series) -> np.ndarray:
 def read_tick_file(path: str | Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     """Return (levels, trades) from a course tick file.
 
-    levels: ts_exch_ns, ts_recv_ns, seq, side ('B'/'S'), px (int), size, is_partial (bool)
-    trades: ts_exch_ns, ts_recv_ns, seq, px (int), size
+    levels: ts_exch_ns, ts_capture_ns, seq, side ('B'/'S'), price (int), size, is_partial (bool)
+    trades: ts_exch_ns, ts_capture_ns, seq, price (int), size
     """
     raw = pd.read_csv(path, header=None, names=TICK_COLUMNS, dtype=str)
 
     p = raw[raw["kind"] == "P"]
     levels = pd.DataFrame({
         "ts_exch_ns": _to_ns(p["source_time"]),
-        "ts_recv_ns": _to_ns(p["collection_time"]),
+        "ts_capture_ns": _to_ns(p["collection_time"]),
         "seq": p["seq"].astype("int64").to_numpy(),
         "side": np.where(p["f5"].to_numpy() == "1", "B", "S"),
-        "px": np.rint(p["f6"].astype(float).to_numpy() * PRICE_SCALE).astype("int64"),
+        "price": np.rint(p["f6"].astype(float).to_numpy() * PRICE_SCALE).astype("int64"),
         "size": p["f7"].astype("int64").to_numpy(),
         "is_partial": p["f11"].to_numpy() == "1",
     })
@@ -62,19 +63,20 @@ def read_tick_file(path: str | Path) -> tuple[pd.DataFrame, pd.DataFrame]:
     t = raw[raw["kind"] == "T"]
     trades = pd.DataFrame({
         "ts_exch_ns": _to_ns(t["source_time"]),
-        "ts_recv_ns": _to_ns(t["collection_time"]),
+        "ts_capture_ns": _to_ns(t["collection_time"]),
         "seq": t["seq"].astype("int64").to_numpy(),
-        "px": np.rint(t["f5"].astype(float).to_numpy() * PRICE_SCALE).astype("int64"),
+        "price": np.rint(t["f5"].astype(float).to_numpy() * PRICE_SCALE).astype("int64"),
         "size": t["f6"].astype("int64").to_numpy(),
     })
     return levels.reset_index(drop=True), trades.reset_index(drop=True)
 
 
-def build_bbo(levels: pd.DataFrame, venue: str = "iex", symbol: str = "SPY") -> pd.DataFrame:
+def build_bbo(levels: pd.DataFrame, venue: str = "IEX", symbol: str = "SPY") -> pd.DataFrame:
     """Replay price-level updates and emit one row whenever the BBO changes.
 
     A row is emitted only after a complete event (is_partial == False) and only
-    if best bid/ask price or size differs from the previous emitted row.
+    if best bid/ask price or size differs from the previous emitted row. An empty
+    side has a null price and size 0.
     """
     bids: dict[int, int] = {}
     asks: dict[int, int] = {}
@@ -83,7 +85,7 @@ def build_bbo(levels: pd.DataFrame, venue: str = "iex", symbol: str = "SPY") -> 
     last = (None, None, None, None)
     out = []
 
-    cols = [levels[c].to_numpy() for c in ("ts_exch_ns", "ts_recv_ns", "seq", "side", "px", "size", "is_partial")]
+    cols = [levels[c].to_numpy() for c in ("ts_exch_ns", "ts_capture_ns", "seq", "side", "price", "size", "is_partial")]
     for ts_e, ts_r, seq, side, px, size, partial in zip(*cols):
         book = bids if side == "B" else asks
         if size == 0:
@@ -102,13 +104,13 @@ def build_bbo(levels: pd.DataFrame, venue: str = "iex", symbol: str = "SPY") -> 
 
         if partial:
             continue
-        cur = (best_bid, bids.get(best_bid) if best_bid is not None else None,
-               best_ask, asks.get(best_ask) if best_ask is not None else None)
+        cur = (best_bid, bids.get(best_bid, 0) if best_bid is not None else 0,
+               best_ask, asks.get(best_ask, 0) if best_ask is not None else 0)
         if cur != last:
             out.append((ts_e, ts_r, seq, *cur))
             last = cur
 
-    df = pd.DataFrame(out, columns=["ts_exch_ns", "ts_recv_ns", "seq", "bid_px", "bid_sz", "ask_px", "ask_sz"])
+    df = pd.DataFrame(out, columns=["ts_exch_ns", "ts_capture_ns", "seq", "bid_px", "bid_sz", "ask_px", "ask_sz"])
     df.insert(3, "venue", venue)
     df.insert(4, "symbol", symbol)
     return df.astype({c: t for c, (t, _) in BBO_COLUMNS.items()})[list(BBO_COLUMNS)]

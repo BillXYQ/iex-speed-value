@@ -90,7 +90,7 @@ def main(argv: list[str] | None = None) -> None:
 
     print(f"Reading {tick_path}")
     levels, trades = read_tick_file(tick_path)
-    bbo = build_bbo(levels, venue="iex", symbol=a.symbol)
+    bbo = build_bbo(levels, venue="IEX", symbol=a.symbol)
     report = validate_bbo(bbo)
     print(f"BBO rows: {len(bbo):,}  validation: {report}")
     if not report.ok:

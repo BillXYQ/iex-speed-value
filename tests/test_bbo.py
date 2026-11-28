@@ -52,10 +52,10 @@ def sample(tmp_path):
 def test_read_tick_file(tmp_path):
     levels, trades = read_tick_file(sample(tmp_path))
     assert len(levels) == 8 and len(trades) == 1
-    assert levels["px"].iloc[0] == 1_000_000  # 100.00 * 10,000
+    assert levels["price"].iloc[0] == 1_000_000  # 100.00 * 10,000
     assert levels["is_partial"].sum() == 1
-    assert (levels["ts_recv_ns"] - levels["ts_exch_ns"] == 20_000).all()
-    assert trades["px"].iloc[0] == 1_000_200
+    assert (levels["ts_capture_ns"] - levels["ts_exch_ns"] == 20_000).all()
+    assert trades["price"].iloc[0] == 1_000_200
 
 
 def test_build_bbo(tmp_path):
@@ -63,7 +63,7 @@ def test_build_bbo(tmp_path):
     bbo = build_bbo(levels)
     got = bbo[["seq", "bid_px", "bid_sz", "ask_px", "ask_sz"]].astype("float64").fillna(-1).values.tolist()
     expected = [
-        [1, 1_000_000, 200, -1, -1],
+        [1, 1_000_000, 200, -1, 0],      # empty ask: null price, size 0
         [2, 1_000_000, 200, 1_000_200, 300],
         [4, 1_000_100, 100, 1_000_200, 300],  # partial seq 3 folded into event ending at seq 4
         [6, 1_000_100, 100, 1_000_200, 200],
@@ -94,7 +94,7 @@ def test_stats(tmp_path):
 
     bid_life = price_lifetimes_us(bbo, "bid")
     # bid 100.00 from t=0 to t=20 (improved), bid 100.01 from t=20 to t=60 (worsened)
-    assert bid_life[["px", "lifetime_us", "ended"]].values.tolist() == [
+    assert bid_life[["price", "lifetime_us", "ended"]].values.tolist() == [
         [1_000_000, 20.0, "improved"], [1_000_100, 40.0, "worsened"]]
 
     sp = spread_ticks(bbo)

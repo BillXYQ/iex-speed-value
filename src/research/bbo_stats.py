@@ -52,7 +52,7 @@ def price_lifetimes_us(bbo: pd.DataFrame, side: str) -> pd.DataFrame:
     """How long each best price stayed at the top of book on one side.
 
     side: 'bid' or 'ask'. Returns one row per run of an unchanged best price:
-    px, start_ns, end_ns, lifetime_us, and how it ended ('improved'/'worsened'
+    price, start_ns, end_ns, lifetime_us, and how it ended ('improved'/'worsened'
     relative to the trader on that side, or 'emptied'). The last run (cut off by
     the end of the window) is dropped.
     """
@@ -72,7 +72,7 @@ def price_lifetimes_us(bbo: pd.DataFrame, side: str) -> pd.DataFrame:
         else:
             how = "worsened"
         rows.append((int(px[i]), ts[i], ts[j], (ts[j] - ts[i]) / 1e3, how))
-    return pd.DataFrame(rows, columns=["px", "start_ns", "end_ns", "lifetime_us", "ended"])
+    return pd.DataFrame(rows, columns=["price", "start_ns", "end_ns", "lifetime_us", "ended"])
 
 
 def spread_ticks(bbo: pd.DataFrame) -> pd.Series:
